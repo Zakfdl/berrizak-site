@@ -12,59 +12,70 @@ import ContactSection from '@/components/ContactSection.jsx';
 const HomePage = () => {
   const [cms, setCms] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
+    let cancelled = false;
+
     (async () => {
       try {
         const res = await fetch('/api/get.php', { cache: 'no-store' });
-        if (!res.ok) throw new Error(`CMS API error: ${res.status}`);
+
+        // لو الـ API مش موجود أو رجع خطأ → استخدم fallback
+        if (!res.ok) throw new Error(`CMS API not ready (${res.status})`);
+
+        // تأكد إن الرد JSON فعلاً
+        const contentType = res.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+          throw new Error('CMS API returned non-JSON response');
+        }
+
         const data = await res.json();
-        setCms(data);
+
+        if (!cancelled) {
+          setCms(data);
+        }
       } catch (e) {
-        setError(e?.message || 'Failed to load CMS data');
+        // ✅ أهم تغيير: بدل ما نوقف الموقع بخطأ… نخلي cms = null ونعرض الموقع عادي
+        console.warn('[CMS] fallback to static content:', e?.message || e);
+        if (!cancelled) setCms(null);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  if (loading) return <div className="p-10">Loading...</div>;
-
-  if (error) {
-    return (
-      <div className="p-10">
-        <p className="font-semibold">CMS Error</p>
-        <p className="opacity-80 mt-2">{error}</p>
-      </div>
-    );
+  // Loading بسيط (اختياري)
+  if (loading) {
+    return <div className="p-10">Loading...</div>;
   }
 
+  // ✅ مفيش Error screen خلاص — الموقع لازم يشتغل حتى لو API واقع
   return (
     <>
       <Helmet>
         <title>
-          {cms?.profile?.name
-            ? `${cms.profile.name} - Portfolio`
-            : 'Portfolio'}
+          {cms?.profile?.name ? `${cms.profile.name} - Portfolio` : 'Zakaria Fadl - Portfolio'}
         </title>
         <meta
           name="description"
-          content={
-            cms?.profile?.bio ||
-            'Portfolio website'
-          }
+          content={cms?.profile?.bio || 'Portfolio website'}
         />
       </Helmet>
 
       <div className="min-h-screen">
         <Header data={cms} />
         <main>
-          {/* ✅ مرر cms للسكاشنز */}
           <HeroSection data={cms} />
           <AboutSection data={cms} />
           <ExperienceSection data={cms} />
-          <PortfolioProjectsSection projects={cms?.projects || []} data={cms} />
+
+          {/* ✅ projects هتيجي من cms لو موجودة، وإلا هتكون [] */}
+          <PortfolioProjectsSection projects={cms?.projects || []} />
+
           <SkillsSection data={cms} />
           <CertificationsSection data={cms} />
           <ContactSection data={cms} />
