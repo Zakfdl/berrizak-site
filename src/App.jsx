@@ -11,7 +11,7 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/cms" element={<Admin />} />
       </Routes>
       <Toaster />
     </Router>
