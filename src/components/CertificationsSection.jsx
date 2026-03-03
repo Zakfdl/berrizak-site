@@ -55,13 +55,13 @@ const CertificationsSection = () => {
       title: 'Create your e-commerce store with Shopify',
       url: 'https://coursera.org/share/7a9641cedfceba9d1ec51c591bda2fa7',
       institution: 'Coursera',
-      logo: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=scale-down/dqhc9b68JewD344S/image-removebg-preview-63-eOnt28HwgbGAW40H.png'
+      logo: 'https://i.imgur.com/4QUmBA6.png'
     },
     {
       title: 'Build a Full Website using WordPress',
       url: 'https://coursera.org/share/fee6e75831ad708825c0d28c994f09b8',
       institution: 'Coursera',
-      logo: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=scale-down/dqhc9b68JewD344S/image-removebg-preview-63-eOnt28HwgbGAW40H.png'
+      logo: 'https://i.imgur.com/4QUmBA6.png'
     }
   ];
 
