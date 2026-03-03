@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ExternalLink, CheckCircle } from 'lucide-react';
 
@@ -45,6 +44,24 @@ const CertificationsSection = () => {
       url: 'https://coursera.org/share/54a0117a71e44530655d79ccc17d2f2a',
       institution: 'Meta',
       logo: 'https://horizons-cdn.hostinger.com/3ab4aec4-2c7c-4c28-b507-29c6155aa379/481f0e3f21eb1a3102022049719ad5dc.png'
+    },
+    {
+      title: 'Foundations: Data, Data, Everywhere',
+      url: 'https://coursera.org/share/d070b5c46c4887047ec05b07107e1022',
+      institution: 'Google',
+      logo: 'https://horizons-cdn.hostinger.com/3ab4aec4-2c7c-4c28-b507-29c6155aa379/bd314f387411b0ada18df54e0950909b.png'
+    },
+    {
+      title: 'Create your e-commerce store with Shopify',
+      url: 'https://coursera.org/share/7a9641cedfceba9d1ec51c591bda2fa7',
+      institution: 'Coursera',
+      logo: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=scale-down/dqhc9b68JewD344S/image-removebg-preview-63-eOnt28HwgbGAW40H.png'
+    },
+    {
+      title: 'Build a Full Website using WordPress',
+      url: 'https://coursera.org/share/fee6e75831ad708825c0d28c994f09b8',
+      institution: 'Coursera',
+      logo: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=scale-down/dqhc9b68JewD344S/image-removebg-preview-63-eOnt28HwgbGAW40H.png'
     }
   ];
 
@@ -71,25 +88,24 @@ const CertificationsSection = () => {
                 rel="noopener noreferrer"
                 className="group block bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-[#1E3A8A]/30 hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
               >
-                {/* Decorative background accent */}
                 <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
-                
+
                 <div className="flex flex-col h-full">
                   <div className="flex items-start justify-between mb-6">
                     <div className="h-12 w-auto flex items-center justify-center bg-white rounded-lg p-1 shadow-sm border border-gray-50">
-                      <img 
-                        src={cert.logo} 
-                        alt={`${cert.institution} logo`} 
+                      <img
+                        src={cert.logo}
+                        alt={`${cert.institution} logo`}
                         className="h-full w-auto object-contain max-w-[100px]"
                       />
                     </div>
                     <ExternalLink className="text-gray-400 group-hover:text-[#1E3A8A] transition-colors" size={20} />
                   </div>
-                  
+
                   <h4 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-[#1E3A8A] transition-colors line-clamp-3">
                     {cert.title}
                   </h4>
-                  
+
                   <div className="mt-auto pt-4 flex items-center gap-2 text-sm font-medium text-gray-500 border-t border-gray-50">
                     <CheckCircle className="text-green-500" size={16} />
                     <span>Verified by {cert.institution}</span>
