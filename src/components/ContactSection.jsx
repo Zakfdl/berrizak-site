@@ -1,15 +1,10 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Phone, Mail, Linkedin, Send, MapPin, FileText, Download, Share2, Twitter, Facebook, Copy, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ContactSection = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const shareRef = useRef(null);
@@ -48,19 +43,38 @@ const ContactSection = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast({
-      title: "🚧 Feature Coming Soon!",
-      description: "The contact form isn't implemented yet—but don't worry! You can request it in your next prompt! 🚀 For now, please use the contact information above to reach out directly.",
-    });
+
+    try {
+      const response = await fetch("https://formspree.io/f/xlgwyjar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) throw new Error("Failed");
+
+      toast({
+        title: "✅ Thank You!",
+        description: "Message Sent Successfully!",
+      });
+
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      toast({
+        title: "❌ Error",
+        description: "Something went wrong. Please try again.",
+      });
+    }
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCopyLink = () => {
@@ -98,10 +112,13 @@ const ContactSection = () => {
     <section id="contact" className="py-24 bg-gradient-to-br from-gray-900 to-black text-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, #1E3A8A 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}></div>
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(circle at 2px 2px, #1E3A8A 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+          }}
+        ></div>
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -119,7 +136,7 @@ const ContactSection = () => {
           {/* Contact Information Cards */}
           <div className="space-y-6">
             <h3 className="text-2xl font-bold mb-8">Contact Information</h3>
-            
+
             {contactInfo.map((info, index) => {
               const IconComponent = info.icon;
               return (
@@ -256,9 +273,8 @@ const ContactSection = () => {
 
             {/* Share Dropdown */}
             <div className={`absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-gray-900 rounded-xl p-3 shadow-2xl border border-gray-700 flex gap-2 min-w-max z-50 transition-all duration-300 origin-bottom ${isShareOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-              {/* Arrow pointing down */}
               <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-gray-900 border-b border-r border-gray-700 transform rotate-45"></div>
-              
+
               {shareLinks.map((link, index) => {
                 const Icon = link.icon;
                 return (
@@ -274,7 +290,7 @@ const ContactSection = () => {
                   </a>
                 );
               })}
-              
+
               <button
                 onClick={handleCopyLink}
                 className="p-3 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition-colors duration-200"

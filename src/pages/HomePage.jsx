@@ -9,6 +9,37 @@ import SkillsSection from '@/components/SkillsSection.jsx';
 import CertificationsSection from '@/components/CertificationsSection.jsx';
 import ContactSection from '@/components/ContactSection.jsx';
 
+/* ✅ Fallback Projects */
+const fallbackProjects = [
+  {
+    id: 'p1',
+    title: 'E-commerce Store Optimization',
+    role: 'E-commerce Specialist',
+    description:
+      'Improved conversion rate through UX enhancements, checkout optimization, and structured product pages.',
+    url: 'https://berrizak.com',
+    tags: ['CRO', 'UX', 'E-commerce'],
+  },
+  {
+    id: 'p2',
+    title: 'Google Merchant Center Setup',
+    role: 'Marketing Operations',
+    description:
+      'Configured product feeds, resolved disapprovals, and improved Google Shopping visibility.',
+    url: 'https://berrizak.com',
+    tags: ['GMC', 'GA4', 'Product Feeds'],
+  },
+  {
+    id: 'p3',
+    title: 'Performance Dashboard & Reporting',
+    role: 'Data Analytics',
+    description:
+      'Built automated dashboards to track KPIs, marketing performance, and sales growth.',
+    url: 'https://berrizak.com',
+    tags: ['Analytics', 'Dashboard', 'KPI'],
+  },
+];
+
 const HomePage = () => {
   const [cms, setCms] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,12 +49,13 @@ const HomePage = () => {
 
     (async () => {
       try {
-        const res = await fetch('/api/get.php', { cache: 'no-store' });
+        const res = await fetch(
+          `${import.meta.env.BASE_URL}api/get.php`,
+          { cache: 'no-store' }
+        );
 
-        // لو الـ API مش موجود أو رجع خطأ → استخدم fallback
         if (!res.ok) throw new Error(`CMS API not ready (${res.status})`);
 
-        // تأكد إن الرد JSON فعلاً
         const contentType = res.headers.get('content-type') || '';
         if (!contentType.includes('application/json')) {
           throw new Error('CMS API returned non-JSON response');
@@ -35,7 +67,6 @@ const HomePage = () => {
           setCms(data);
         }
       } catch (e) {
-        // ✅ أهم تغيير: بدل ما نوقف الموقع بخطأ… نخلي cms = null ونعرض الموقع عادي
         console.warn('[CMS] fallback to static content:', e?.message || e);
         if (!cancelled) setCms(null);
       } finally {
@@ -48,33 +79,43 @@ const HomePage = () => {
     };
   }, []);
 
-  // Loading بسيط (اختياري)
+  /* ✅ Decide which projects to show */
+  const projectsToShow =
+    cms?.projects && Array.isArray(cms.projects) && cms.projects.length > 0
+      ? cms.projects
+      : fallbackProjects;
+
   if (loading) {
     return <div className="p-10">Loading...</div>;
   }
 
-  // ✅ مفيش Error screen خلاص — الموقع لازم يشتغل حتى لو API واقع
   return (
     <>
       <Helmet>
         <title>
-          {cms?.profile?.name ? `${cms.profile.name} - Portfolio` : 'Zakaria Fadl - Portfolio'}
+          {cms?.profile?.name
+            ? `${cms.profile.name} - Portfolio`
+            : 'Zakaria Fadl - Portfolio'}
         </title>
         <meta
           name="description"
-          content={cms?.profile?.bio || 'Portfolio website'}
+          content={
+            cms?.profile?.bio ||
+            'Portfolio showcasing e-commerce systems, SEO strategy, and data-driven growth.'
+          }
         />
       </Helmet>
 
       <div className="min-h-screen">
         <Header data={cms} />
+
         <main>
           <HeroSection data={cms} />
           <AboutSection data={cms} />
           <ExperienceSection data={cms} />
 
-          {/* ✅ projects هتيجي من cms لو موجودة، وإلا هتكون [] */}
-          <PortfolioProjectsSection projects={cms?.projects || []} />
+          {/* ✅ Now always shows projects */}
+          <PortfolioProjectsSection projects={projectsToShow} />
 
           <SkillsSection data={cms} />
           <CertificationsSection data={cms} />
